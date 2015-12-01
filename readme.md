@@ -11,6 +11,9 @@
 - npm run test:watch (run all tests and check for changes in files)
 
 ##Log
+
+###2015-01-01
+
 - npm install --save-dev babel-core babel-cli babel-preset-es2015
 - npm install --save-dev mocha chai
 - run tests with: ./node_modules/mocha/bin/mocha --compilers js:babel-core/register --recursive
