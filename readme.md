@@ -25,3 +25,4 @@
 (see http://teropa.info/blog/2015/09/10/full-stack-redux-tutorial.html for project setup )
 
 - implementend first tests and functions for scenes
+- added a scene reducer. possible changes between states need some rethinking, especially the initial state - but it's enough for today
