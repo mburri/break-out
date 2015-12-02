@@ -12,7 +12,7 @@
 
 ##Log
 
-###2015-01-01
+###2015-12-01
 
 - npm install --save-dev babel-core babel-cli babel-preset-es2015
 - npm install --save-dev mocha chai
@@ -26,3 +26,8 @@
 
 - implementend first tests and functions for scenes
 - added a scene reducer. possible changes between states need some rethinking, especially the initial state - but it's enough for today
+
+###2015-12-02
+- used reducer function with array.reduce in a test just to make it clear why it's called a reducer function :-)
+- npm install --save redux
+- implemented the store with tests
