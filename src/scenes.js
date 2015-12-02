@@ -1,7 +1,7 @@
 export const START = "START";
 export const GAME = "GAME";
 export const GAME_OVER = "GAME_OVER";
-export const PAUSE = "PAUSE"
+export const PAUSE = "PAUSE";
 
 function setScene(state, scene) {
     return state.set('scene', scene);

@@ -37,3 +37,4 @@
 - npm install --save-dev babel-loader
 - added npm task to serve application: npm run serve
 - application is accessible at http://localhost:8080/webpack-dev-server/index.html
+- implemented very simple frontend. it just writes the current scene as text. Actions can be dispatched with simple mouse clicks. Press ESC while GAME is the current scene to GAME_OVER...

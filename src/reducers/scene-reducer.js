@@ -1,4 +1,4 @@
-import {beginGame, pause, resume, gameOver, START} from '../../src/scenes.js';
+import {start, beginGame, pause, resume, gameOver, START} from '../../src/scenes.js';
 import {Map} from 'immutable';
 
 const INITIAL_STATE = Map({
@@ -7,6 +7,8 @@ const INITIAL_STATE = Map({
 
 export function scene(state = INITIAL_STATE, action) {
     switch(action.type) {
+        case 'START':
+            return start(state);
         case 'START_GAME':
             return beginGame(state);
         case 'PAUSE_GAME':
