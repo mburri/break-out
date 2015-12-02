@@ -50,4 +50,18 @@ describe('scene-reducer', () => {
             scene: START
         }));
     });
+
+    it('can be used with reduce', () => {
+      const actions = [
+        {type: 'START_GAME'},
+        {type: 'PAUSE' },
+        {type: 'RESUME_GAME'},
+        {type: 'GAME_OVER'}
+      ];
+      const finalState = actions.reduce(scene, Map());
+
+      expect(finalState).to.equal(Map({
+        scene: GAME_OVER
+      }));
+    });
 });
