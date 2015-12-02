@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --compilers js:babel-core/register --require ./test/setup.js  --recursive",
-    "test:watch": "npm run test -- --watch"
+    "test:watch": "npm run test -- --watch",
+    "serve": "webpack-dev-server --content-base dist/"
   },
   "keywords": [],
   "author": "",
@@ -13,10 +14,13 @@
   "devDependencies": {
     "babel-cli": "^6.2.0",
     "babel-core": "^6.2.1",
+    "babel-loader": "^6.2.0",
     "babel-preset-es2015": "^6.1.18",
     "chai": "^3.4.1",
     "chai-immutable": "^1.5.3",
-    "mocha": "^2.3.4"
+    "mocha": "^2.3.4",
+    "webpack": "^1.12.9",
+    "webpack-dev-server": "^1.14.0"
   },
   "babel": {
     "presets": [

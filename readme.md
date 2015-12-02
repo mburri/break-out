@@ -31,3 +31,9 @@
 - used reducer function with array.reduce in a test just to make it clear why it's called a reducer function :-)
 - npm install --save redux
 - implemented the store with tests
+- added index.html
+- npm install --save-dev webpack webpack-dev-server
+- setup index.js and webpack config
+- npm install --save-dev babel-loader
+- added npm task to serve application: npm run serve
+- application is accessible at http://localhost:8080/webpack-dev-server/index.html
