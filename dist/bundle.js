@@ -90,8 +90,9 @@
 	    ctx.fillStyle = "#0099ff";
 	    ctx.font = "bold 24px Arial";
 	    ctx.fillText("space - begin game", 100, 130);
-	    ctx.fillText("p - pause/ resume game", 100, 160);
-	    ctx.fillText("esc - return to start screen", 100, 190);
+	    ctx.fillText("p - pause", 100, 160);
+	    ctx.fillText("r - resume game", 100, 190);
+	    ctx.fillText("esc - return to start screen", 100, 220);
 	}
 
 	function gameScene(ctx) {
