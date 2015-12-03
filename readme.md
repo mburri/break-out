@@ -1,10 +1,13 @@
 #break-out
+[check it out (work in progress)](http://mburri.github.io/break-out/dist/index.html)
 - An attempt to implement a break-out clone using the redux/ elm-architecture pattern.
 - based on:
    - http://teropa.info/blog/2015/09/10/full-stack-redux-tutorial.html (project setup, tdd, es6)
    - https://github.com/evancz/elm-architecture-tutorial (functional reactive programming)
    - https://developer.mozilla.org/en-US/docs/Games/Workflows/2D_Breakout_game_pure_JavaScript (canvas, drawing, user input)
    - https://www.khanacademy.org/computing/computer-programming/programming-games-visualizations (e.g. for scenes)
+
+   - this project is part of "Thömus Open Source Advents-Challenge 2015"
 
 ##Tests
 - npm run test (run all tests)
@@ -42,8 +45,10 @@
 ###2015-12-03
 - render scenes to canvas (with very nice colors)
 - added functions and reducer for paddle movement
+- created gh-pages branch for this repo.
 
 ##TODOs
 - constants for key codes
 - extract render functions from index.js
 - constants for action types
+- fancy gh-page and reasoonable build/ deploy
