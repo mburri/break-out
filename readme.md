@@ -38,3 +38,11 @@
 - added npm task to serve application: npm run serve
 - application is accessible at http://localhost:8080/webpack-dev-server/index.html
 - implemented very simple frontend. it just writes the current scene as text. Actions can be dispatched with simple mouse clicks. Press ESC while GAME is the current scene to GAME_OVER...
+
+###2015-12-03
+- render scenes to canvas (with very nice colors)
+
+##TODOs
+- constants for key codes
+- extract render functions from index.js
+- constants for action types
