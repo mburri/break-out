@@ -41,6 +41,7 @@
 
 ###2015-12-03
 - render scenes to canvas (with very nice colors)
+- added functions and reducer for paddle movement
 
 ##TODOs
 - constants for key codes
