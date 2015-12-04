@@ -49,6 +49,7 @@
 
 ###2015-12-04
 - major refactorings to be able to combine reducers - lesson learned...
+- ... and it moves! implementing paddle movement was a breeze...
 
 ##TODOs
 - constants for key codes
