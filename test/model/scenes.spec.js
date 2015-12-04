@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 
-import {start, begin, gameOver, pause, resume, START, GAME, PAUSE, GAME_OVER} from '../src/model/scenes.js';
+import {start, begin, gameOver, pause, resume, START, GAME, PAUSE, GAME_OVER} from '../../src/model/scenes.js';
 
 describe('scenes', () => {
     it('should create start-scene for undefined state', () => {
