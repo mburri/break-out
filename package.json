@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha --compilers js:babel-core/register --require ./test/setup.js  --recursive",
     "test:watch": "npm run test -- --watch",
-    "serve": "webpack-dev-server --content-base dist/"
+    "serve": "webpack-dev-server --content-base dist/",
+    "build": "webpack"
   },
   "keywords": [],
   "author": "",
