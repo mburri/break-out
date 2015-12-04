@@ -1,5 +1,5 @@
 import makeStore from './store';
-import {START, GAME, PAUSE, GAME_OVER} from './scenes';
+import {START, GAME, PAUSE, GAME_OVER} from './model/scenes';
 
 const store = makeStore();
 
@@ -8,7 +8,7 @@ var ctx = canvas.getContext("2d");
 
 function render(ctx) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    switch(store.getState().get('scene')) {
+    switch(store.getState().scene) {
         case START:
             startScene(ctx);
             break;
@@ -36,9 +36,15 @@ function startScene(ctx) {
 }
 
 function gameScene(ctx) {
-    ctx.fillStyle = "darkgrey";
-    ctx.font = "bold 32px Arial";
-    ctx.fillText("Game will run in this scene", 100, 100);
+    drawPaddle(ctx);
+}
+
+function drawPaddle(ctx) {
+    ctx.beginPath();
+    ctx.rect(store.getState().paddle.get('position'), canvas.height-10, 75, 10);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
 }
 
 function pauseScene(ctx) {
@@ -72,5 +78,14 @@ document.addEventListener('keydown', (event) => {
         case 27: // esc
             store.dispatch({type: 'START'});
             break;
+        case 37: // left
+            store.dispatch({type: 'SPEED', value: -10});
+            store.dispatch({type: 'MOVE'});
+            break;
+        case 39: // right
+            store.dispatch({type: 'SPEED', value: 10});
+            store.dispatch({type: 'MOVE'});
+            break;
+
     }
 });
