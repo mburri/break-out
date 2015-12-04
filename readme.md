@@ -51,6 +51,9 @@
 - major refactorings to be able to combine reducers - lesson learned...
 - ... and it moves! implementing paddle movement was a breeze...
 
+###2015-12-05
+- adding the ball model
+
 ##TODOs
 - constants for key codes
 - extract render functions from index.js
