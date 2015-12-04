@@ -47,6 +47,9 @@
 - added functions and reducer for paddle movement
 - created gh-pages branch for this repo.
 
+###2015-12-04
+- major refactorings to be able to combine reducers - lesson learned...
+
 ##TODOs
 - constants for key codes
 - extract render functions from index.js
