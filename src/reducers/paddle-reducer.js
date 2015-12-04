@@ -1,11 +1,11 @@
-import {setSpeed, move} from '../paddle';
+import {setSpeed, move} from '../model/paddle';
 
 export function paddle(state, action) {
     switch(action.type) {
         case 'SPEED':
-            return state.update('paddle', paddleState => setSpeed(paddleState, action.value));
+            return setSpeed(state, action.value);
         case 'MOVE':
-            return state.update('paddle', paddleState => move(paddleState));
+            return move(state);
         default:
             return state;
     }

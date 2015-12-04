@@ -1,7 +1,7 @@
 import {Map} from 'immutable';
 import {expect} from 'chai';
 
-import {setSpeed, move} from '../src/paddle';
+import {setSpeed, move} from '../../src/model/paddle';
 
 describe('paddle', () => {
     it('should set paddle speed given value', () => {
