@@ -72,7 +72,7 @@ function gameOverScene(ctx) {
 
 function step() {
     if(store.getState().scene === GAME) {
-        store.dispatch({type: 'NEXT'});
+        store.dispatch({type: 'NEXT', payload: store.getState()});
     }
     window.requestAnimationFrame(step);
 }

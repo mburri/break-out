@@ -3,7 +3,11 @@ export function setSpeed(paddleState, newSpeed) {
 }
 
 export function move(paddleState) {
-    const speed = paddleState.get('speed');
+    let speed = paddleState.get('speed');
     const currentPosition = paddleState.get('position');
-    return paddleState.set('position', currentPosition + speed);
+    if (speed + currentPosition <= 0 || speed + currentPosition + 75 >= 640) {
+        speed = 0;
+    }
+    return paddleState.set('position', currentPosition + speed)
+                      .set('speed', speed);
 }
