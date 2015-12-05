@@ -10,18 +10,18 @@ export function bounceX(state) {
 
 export function move(state, previousState) {
     let ball = state.toJS();
-    let next_dy = ball.dy;
-    let next_dx = ball.dx;
-    if(ball.posy + ball.dy > 480 || ball.posy + ball.dy < 0) {
-        next_dy = -ball.dy;
-    }
+    let newDeltaX = inverseDeltaOnCollision(ball.posx, ball.dx, 640, 0);
+    let newDeltaY = inverseDeltaOnCollision(ball.posy, ball.dy, 480, 0);
 
-    if(ball.posx + ball.dx > 640 || ball.posx + ball.dx < 0) {
-        next_dx = -ball.dx;
-    }
+    return state.set('posx', state.get('posx') + newDeltaX)
+                .set('posy', state.get('posy') + newDeltaY)
+                .set('dx', newDeltaX)
+                .set('dy', newDeltaY);
+}
 
-    return state.set('posx', state.get('posx') + next_dx)
-                .set('posy', state.get('posy') + next_dy)
-                .set('dy', next_dy)
-                .set('dx', next_dx);
+function inverseDeltaOnCollision(pos, delta, upper, lower) {
+    if(pos + delta > upper || pos + delta < 0) {
+        return -delta;
+    }
+    return delta;
 }
