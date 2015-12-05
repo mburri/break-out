@@ -59,6 +59,8 @@
 
 	var _scenes = __webpack_require__(14);
 
+	var _immutable = __webpack_require__(17);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var store = (0, _store2.default)();
@@ -68,7 +70,7 @@
 
 	function render(ctx) {
 	    ctx.clearRect(0, 0, canvas.width, canvas.height);
-	    switch (store.getState().get('scene')) {
+	    switch (store.getState().scene) {
 	        case _scenes.START:
 	            startScene(ctx);
 	            break;
@@ -96,9 +98,25 @@
 	}
 
 	function gameScene(ctx) {
-	    ctx.fillStyle = "darkgrey";
-	    ctx.font = "bold 32px Arial";
-	    ctx.fillText("Game will run in this scene", 100, 100);
+	    drawPaddle(ctx);
+	    drawBall(ctx);
+	}
+
+	function drawPaddle(ctx) {
+	    ctx.beginPath();
+	    ctx.rect(store.getState().paddle.get('position'), canvas.height - 10, 75, 10);
+	    ctx.fillStyle = "#0095DD";
+	    ctx.fill();
+	    ctx.closePath();
+	}
+
+	function drawBall(ctx) {
+	    var ball = store.getState().ball.toJS();
+	    ctx.beginPath();
+	    ctx.arc(ball.posx, ball.posy, 10, 0, Math.PI * 2);
+	    ctx.fillStyle = "#0095DD";
+	    ctx.fill();
+	    ctx.closePath();
 	}
 
 	function pauseScene(ctx) {
@@ -113,10 +131,19 @@
 	    ctx.fillText("Game Over", 100, 100);
 	}
 
+	function step() {
+	    if (store.getState().scene === _scenes.GAME) {
+	        store.dispatch({ type: 'NEXT', payload: store.getState() });
+	    }
+	    window.requestAnimationFrame(step);
+	}
+
 	store.subscribe(function () {
 	    render(ctx);
 	});
 	render(ctx);
+
+	window.requestAnimationFrame(step);
 
 	document.addEventListener('keydown', function (event) {
 	    switch (event.keyCode) {
@@ -136,6 +163,14 @@
 	            // esc
 	            store.dispatch({ type: 'START' });
 	            break;
+	        case 37:
+	            // left
+	            store.dispatch({ type: 'SPEED', value: -10 });
+	            break;
+	        case 39:
+	            // right
+	            store.dispatch({ type: 'SPEED', value: 10 });
+	            break;
 	    }
 	});
 
@@ -154,8 +189,12 @@
 
 	var _sceneReducer = __webpack_require__(13);
 
+	var _paddleReducer = __webpack_require__(15);
+
+	var _ballReducer = __webpack_require__(18);
+
 	function makeStore() {
-	    return (0, _redux.createStore)(_sceneReducer.scene);
+	    return (0, _redux.createStore)((0, _redux.combineReducers)({ scene: _sceneReducer.scene, paddle: _paddleReducer.paddle, ball: _ballReducer.ball }));
 	}
 
 /***/ },
@@ -852,11 +891,7 @@
 
 	var _scenes = __webpack_require__(14);
 
-	var _immutable = __webpack_require__(15);
-
-	var INITIAL_STATE = (0, _immutable.Map)({
-	    scene: _scenes.START
-	});
+	var INITIAL_STATE = _scenes.START;
 
 	function scene() {
 	    var state = arguments.length <= 0 || arguments[0] === undefined ? INITIAL_STATE : arguments[0];
@@ -866,7 +901,7 @@
 	        case 'START':
 	            return (0, _scenes.start)(state);
 	        case 'START_GAME':
-	            return (0, _scenes.beginGame)(state);
+	            return (0, _scenes.begin)(state);
 	        case 'PAUSE_GAME':
 	            return (0, _scenes.pause)(state);
 	        case 'RESUME_GAME':
@@ -889,7 +924,7 @@
 	});
 	exports.start = start;
 	exports.gameOver = gameOver;
-	exports.beginGame = beginGame;
+	exports.begin = begin;
 	exports.pause = pause;
 	exports.resume = resume;
 	var START = exports.START = "START";
@@ -897,41 +932,84 @@
 	var GAME_OVER = exports.GAME_OVER = "GAME_OVER";
 	var PAUSE = exports.PAUSE = "PAUSE";
 
-	function setScene(state, scene) {
-	    return state.set('scene', scene);
-	}
-
 	function start(state) {
-	    return setScene(state, START);
+	    return START;
 	}
-
 	function gameOver(state) {
-	    if (state.get('scene') === GAME) {
-	        return setScene(state, GAME_OVER);
-	    }
-	    return state;
+	    return GAME_OVER;
 	}
 
-	function beginGame(state) {
-	    return setScene(state, GAME);
+	function begin(state) {
+	    return GAME;
 	}
 
 	function pause(state) {
-	    if (state.get('scene') === GAME) {
-	        return setScene(state, PAUSE);
-	    }
-	    return state;
+	    return PAUSE;
 	}
 
 	function resume(state) {
-	    if (state.get('scene') === PAUSE) {
-	        return setScene(state, GAME);
-	    }
-	    return state;
+	    return GAME;
 	}
 
 /***/ },
 /* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.paddle = paddle;
+
+	var _paddle = __webpack_require__(16);
+
+	var _immutable = __webpack_require__(17);
+
+	var INITIAL_STATE = (0, _immutable.Map)({
+	    speed: 0,
+	    position: 300
+	});
+	function paddle() {
+	    var state = arguments.length <= 0 || arguments[0] === undefined ? INITIAL_STATE : arguments[0];
+	    var action = arguments[1];
+
+	    switch (action.type) {
+	        case 'SPEED':
+	            return (0, _paddle.setSpeed)(state, action.value);
+	        case 'NEXT':
+	            return (0, _paddle.move)(state);
+	        default:
+	            return state;
+	    }
+	}
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.setSpeed = setSpeed;
+	exports.move = move;
+	function setSpeed(paddleState, newSpeed) {
+	    return paddleState.set('speed', newSpeed);
+	}
+
+	function move(paddleState) {
+	    var speed = paddleState.get('speed');
+	    var currentPosition = paddleState.get('position');
+	    if (speed + currentPosition <= 0 || speed + currentPosition + 75 >= 640) {
+	        speed = 0;
+	    }
+	    return paddleState.set('position', currentPosition + speed).set('speed', speed);
+	}
+
+/***/ },
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -5894,6 +5972,86 @@
 	  return Immutable;
 
 	}));
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.ball = ball;
+
+	var _immutable = __webpack_require__(17);
+
+	var _ball = __webpack_require__(19);
+
+	var Ball = _interopRequireWildcard(_ball);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	var INITIAL_STATE = (0, _immutable.Map)({
+	    dx: 2,
+	    dy: 2,
+	    posx: 320,
+	    posy: 100
+	});
+
+	function ball() {
+	    var state = arguments.length <= 0 || arguments[0] === undefined ? INITIAL_STATE : arguments[0];
+	    var action = arguments[1];
+
+	    switch (action.type) {
+	        case 'BOUNCE_X':
+	            return Ball.bounceX(state);
+	        case 'BOUNCE_Y':
+	            return Ball.bounceY(state);
+	        case 'NEXT':
+	            return Ball.move(state, action.payload);
+	        default:
+	            return state;
+	    }
+	}
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.bounceY = bounceY;
+	exports.bounceX = bounceX;
+	exports.move = move;
+
+	var _immutable = __webpack_require__(17);
+
+	function bounceY(state) {
+	    return state.set('dy', -1 * state.get('dy'));
+	}
+
+	function bounceX(state) {
+	    return state.set('dx', -1 * state.get('dx'));
+	}
+
+	function move(state, previousState) {
+	    var ball = state.toJS();
+	    var next_dy = ball.dy;
+	    var next_dx = ball.dx;
+	    if (ball.posy + ball.dy > 480 || ball.posy + ball.dy < 0) {
+	        next_dy = -ball.dy;
+	    }
+
+	    if (ball.posx + ball.dx > 640 || ball.posx + ball.dx < 0) {
+	        next_dx = -ball.dx;
+	    }
+
+	    return state.set('posx', state.get('posx') + next_dx).set('posy', state.get('posy') + next_dy).set('dy', next_dy).set('dx', next_dx);
+	}
 
 /***/ }
 /******/ ]);
