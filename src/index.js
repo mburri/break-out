@@ -1,5 +1,6 @@
 import makeStore from './store';
 import {START, GAME, PAUSE, GAME_OVER} from './model/scenes';
+import {toJS} from 'immutable';
 
 const store = makeStore();
 
@@ -37,11 +38,21 @@ function startScene(ctx) {
 
 function gameScene(ctx) {
     drawPaddle(ctx);
+    drawBall(ctx);
 }
 
 function drawPaddle(ctx) {
     ctx.beginPath();
     ctx.rect(store.getState().paddle.get('position'), canvas.height-10, 75, 10);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+}
+
+function drawBall(ctx) {
+    let ball = store.getState().ball.toJS();
+    ctx.beginPath();
+    ctx.arc(ball.posx, ball.posy, 10, 0, Math.PI*2);
     ctx.fillStyle = "#0095DD";
     ctx.fill();
     ctx.closePath();
@@ -59,10 +70,19 @@ function gameOverScene(ctx) {
     ctx.fillText("Game Over", 100, 100);
 }
 
+function step() {
+    if(store.getState().scene === GAME) {
+        store.dispatch({type: 'NEXT'});
+    }
+    window.requestAnimationFrame(step);
+}
+
 store.subscribe(() => {
     render(ctx);
 });
 render(ctx);
+
+window.requestAnimationFrame(step);
 
 document.addEventListener('keydown', (event) => {
     switch(event.keyCode) {
@@ -80,12 +100,9 @@ document.addEventListener('keydown', (event) => {
             break;
         case 37: // left
             store.dispatch({type: 'SPEED', value: -10});
-            store.dispatch({type: 'MOVE'});
             break;
         case 39: // right
             store.dispatch({type: 'SPEED', value: 10});
-            store.dispatch({type: 'MOVE'});
             break;
-
     }
 });

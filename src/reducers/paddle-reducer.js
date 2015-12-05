@@ -8,7 +8,7 @@ export function paddle(state = INITIAL_STATE, action) {
     switch(action.type) {
         case 'SPEED':
             return setSpeed(state, action.value);
-        case 'MOVE':
+        case 'NEXT':
             return move(state);
         default:
             return state;

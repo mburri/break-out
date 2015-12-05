@@ -13,6 +13,12 @@ describe('testing the store', () => {
             paddle: Map({
                 speed: 0,
                 position: 300
+            }),
+            ball: Map({
+                dx: 2,
+                dy: 2,
+                posx: 320,
+                posy: 100
             })
         });
     });

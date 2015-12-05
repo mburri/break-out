@@ -19,7 +19,7 @@ describe('paddle reducer', () => {
             speed: -10,
             position: 100
         });
-        const nextState = paddle(state, {type: 'MOVE'});
+        const nextState = paddle(state, {type: 'NEXT'});
         expect(nextState).to.equal(Map({
             speed: -10,
             position: 90
