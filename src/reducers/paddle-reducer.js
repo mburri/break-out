@@ -6,6 +6,8 @@ const INITIAL_STATE = Map({
 });
 export function paddle(state = INITIAL_STATE, action) {
     switch(action.type) {
+        case 'START':
+            return INITIAL_STATE;
         case 'SPEED':
             return setSpeed(state, action.value);
         case 'NEXT':

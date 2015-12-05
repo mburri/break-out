@@ -52,7 +52,8 @@
 - ... and it moves! implementing paddle movement was a breeze...
 
 ###2015-12-05
-- adding the ball model
+- adding a moving ball
+- collision detection and game over...
 
 ##TODOs
 - constants for key codes

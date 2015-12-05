@@ -37,13 +37,16 @@ function startScene(ctx) {
 }
 
 function gameScene(ctx) {
+    if(Object.keys(store.getState().ball.toJS()).length === 0) {
+        store.dispatch({type: 'GAME_OVER'});
+    }
     drawPaddle(ctx);
     drawBall(ctx);
 }
 
 function drawPaddle(ctx) {
     ctx.beginPath();
-    ctx.rect(store.getState().paddle.get('position'), canvas.height-40, 75, 10);
+    ctx.rect(store.getState().paddle.get('position'), canvas.height-10, 75, 10);
     ctx.fillStyle = "#0095DD";
     ctx.fill();
     ctx.closePath();
@@ -99,10 +102,10 @@ document.addEventListener('keydown', (event) => {
             store.dispatch({type: 'START'});
             break;
         case 37: // left
-            store.dispatch({type: 'SPEED', value: -10});
+            store.dispatch({type: 'SPEED', value: -5});
             break;
         case 39: // right
-            store.dispatch({type: 'SPEED', value: 10});
+            store.dispatch({type: 'SPEED', value: 5});
             break;
     }
 });

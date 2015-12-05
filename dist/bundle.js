@@ -98,6 +98,9 @@
 	}
 
 	function gameScene(ctx) {
+	    if (Object.keys(store.getState().ball.toJS()).length === 0) {
+	        store.dispatch({ type: 'GAME_OVER' });
+	    }
 	    drawPaddle(ctx);
 	    drawBall(ctx);
 	}
@@ -165,11 +168,11 @@
 	            break;
 	        case 37:
 	            // left
-	            store.dispatch({ type: 'SPEED', value: -10 });
+	            store.dispatch({ type: 'SPEED', value: -5 });
 	            break;
 	        case 39:
 	            // right
-	            store.dispatch({ type: 'SPEED', value: 10 });
+	            store.dispatch({ type: 'SPEED', value: 5 });
 	            break;
 	    }
 	});
@@ -975,6 +978,8 @@
 	    var action = arguments[1];
 
 	    switch (action.type) {
+	        case 'START':
+	            return INITIAL_STATE;
 	        case 'SPEED':
 	            return (0, _paddle.setSpeed)(state, action.value);
 	        case 'NEXT':
@@ -6004,6 +6009,8 @@
 	    var action = arguments[1];
 
 	    switch (action.type) {
+	        case 'START':
+	            return INITIAL_STATE;
 	        case 'BOUNCE_X':
 	            return Ball.bounceX(state);
 	        case 'BOUNCE_Y':
@@ -6038,19 +6045,37 @@
 	    return state.set('dx', -1 * state.get('dx'));
 	}
 
-	function move(state, previousState) {
+	function move(state, payload) {
 	    var ball = state.toJS();
-	    var next_dy = ball.dy;
-	    var next_dx = ball.dx;
-	    if (ball.posy + ball.dy > 480 || ball.posy + ball.dy < 0) {
-	        next_dy = -ball.dy;
+	    var paddle = payload.paddle.toJS();
+	    var newDeltaY = bounceOfTopOrPaddle(ball, paddle);
+
+	    if (newDeltaY === 0) {
+	        return (0, _immutable.Map)({}); // GAME OVER
 	    }
 
-	    if (ball.posx + ball.dx > 640 || ball.posx + ball.dx < 0) {
-	        next_dx = -ball.dx;
-	    }
+	    var newDeltaX = inverseDeltaOnCollision(ball.posx, ball.dx, 640, 0);
+	    return state.set('posx', state.get('posx') + newDeltaX).set('posy', state.get('posy') + newDeltaY).set('dx', newDeltaX).set('dy', newDeltaY);
+	}
 
-	    return state.set('posx', state.get('posx') + next_dx).set('posy', state.get('posy') + next_dy).set('dy', next_dy).set('dx', next_dx);
+	function inverseDeltaOnCollision(pos, delta, upper, lower) {
+	    if (pos + delta > upper || pos + delta < 0) {
+	        return -delta;
+	    }
+	    return delta;
+	}
+
+	function bounceOfTopOrPaddle(ball, paddle) {
+	    if (ball.posy + ball.dy < 0) {
+	        return -ball.dy;
+	    } else if (ball.posy + ball.dy > 470) {
+	        if (ball.posx > paddle.position && ball.posx < paddle.position + 75) {
+	            return -ball.dy;
+	        } else {
+	            return 0;
+	        }
+	    }
+	    return ball.dy;
 	}
 
 /***/ }

@@ -53,7 +53,12 @@ describe('ball reducer', () => {
             posx: 320,
             posy: 100
         });
-        const nextState = ball(state, {type: 'NEXT'});
+        const payload = {
+            paddle: Map({
+            position: 320,
+            speed: 5
+        })};
+        const nextState = ball(state, {type: 'NEXT', payload: payload});
         expect(nextState).to.equal(Map({
             dx: -2,
             dy: 2,

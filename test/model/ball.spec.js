@@ -36,7 +36,13 @@ describe('ball', () => {
             posx: 100,
             posy: 100
         });
-        const nextState = move(state);
+        const payload = {
+            paddle: Map({
+                position: 320,
+                speed: 5
+            })
+        };
+        const nextState = move(state, payload);
         expect(nextState).to.equal(Map({
             dx: 2,
             dy: -2,

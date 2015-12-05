@@ -10,6 +10,8 @@ const INITIAL_STATE = Map({
 
 export function ball(state = INITIAL_STATE, action) {
     switch(action.type) {
+        case 'START':
+            return INITIAL_STATE;
         case 'BOUNCE_X':
             return Ball.bounceX(state);
         case 'BOUNCE_Y':
