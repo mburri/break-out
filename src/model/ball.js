@@ -10,7 +10,7 @@ export function bounceX(state) {
 
 export function move(state, payload) {
     const ball = state.get('ball').toJS();
-    const paddle = payload.paddle.toJS();
+    const paddle = payload.paddle.get('paddle').toJS();
     const newDeltaY = bounceOfTopOrPaddle(ball, paddle);
 
     if (newDeltaY === 0) {

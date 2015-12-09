@@ -25,7 +25,7 @@ function render(ctx) {
 }
 
 function startScene(ctx) {
-    ctx.fillStyle = "#0000ff"
+    ctx.fillStyle = "#0000ff";
     ctx.font = "bold 32px Arial";
     ctx.fillText("Breakout!", 100, 100);
     ctx.fillStyle = "#0099ff";
@@ -37,16 +37,17 @@ function startScene(ctx) {
 }
 
 function gameScene(ctx) {
-    if(Object.keys(store.getState().ball.toJS()).length === 0) {
+    if(store.getState().ball.get('ball') === undefined) {
         store.dispatch({type: 'GAME_OVER'});
+    } else {
+      drawPaddle(ctx);
+      drawBall(ctx);
     }
-    drawPaddle(ctx);
-    drawBall(ctx);
 }
 
 function drawPaddle(ctx) {
     ctx.beginPath();
-    ctx.rect(store.getState().paddle.get('position'), canvas.height-10, 75, 10);
+    ctx.rect(store.getState().paddle.getIn(['paddle', 'position']), canvas.height-10, 75, 10);
     ctx.fillStyle = "#0095DD";
     ctx.fill();
     ctx.closePath();
