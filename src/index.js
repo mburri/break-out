@@ -9,7 +9,7 @@ var ctx = canvas.getContext("2d");
 
 function render(ctx) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    switch(store.getState().scene) {
+    switch(store.getState().scene.get('scene')) {
         case START:
             startScene(ctx);
             break;
@@ -74,7 +74,7 @@ function gameOverScene(ctx) {
 }
 
 function step() {
-    if(store.getState().scene === GAME) {
+    if(store.getState().scene.get('scene') === GAME) {
         store.dispatch({type: 'NEXT', payload: store.getState()});
     }
     window.requestAnimationFrame(step);
