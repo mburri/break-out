@@ -4,20 +4,20 @@ export const GAME_OVER = "GAME_OVER";
 export const PAUSE = "PAUSE";
 
 export function start(state) {
-    return START;
+    return state.set('scene', START);
 }
 export function gameOver(state) {
-    return GAME_OVER;
+    return state.set('scene', GAME_OVER);
 }
 
 export function begin(state) {
-    return GAME;
+    return state.set('scene', GAME);
 }
 
 export function pause(state) {
-    return PAUSE;
+    return state.set('scene', PAUSE);
 }
 
 export function resume(state) {
-    return GAME;
+    return state.set('scene', GAME);
 }
