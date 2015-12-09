@@ -9,7 +9,7 @@ var ctx = canvas.getContext("2d");
 
 function render(ctx) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    switch(store.getState().scene.get('scene')) {
+    switch(store.getState().get('scene')) {
         case START:
             startScene(ctx);
             break;
@@ -37,24 +37,20 @@ function startScene(ctx) {
 }
 
 function gameScene(ctx) {
-    if(store.getState().ball.get('ball') === undefined) {
-        store.dispatch({type: 'GAME_OVER'});
-    } else {
-      drawPaddle(ctx);
-      drawBall(ctx);
-    }
+    drawPaddle(ctx);
+    drawBall(ctx);
 }
 
 function drawPaddle(ctx) {
     ctx.beginPath();
-    ctx.rect(store.getState().paddle.getIn(['paddle', 'position']), canvas.height-10, 75, 10);
+    ctx.rect(store.getState().getIn(['paddle', 'position']), canvas.height-10, 75, 10);
     ctx.fillStyle = "#0095DD";
     ctx.fill();
     ctx.closePath();
 }
 
 function drawBall(ctx) {
-    let ball = store.getState().ball.get('ball').toJS();
+    let ball = store.getState().get('ball').toJS();
     ctx.beginPath();
     ctx.arc(ball.posx, ball.posy, 10, 0, Math.PI*2);
     ctx.fillStyle = "#0095DD";
@@ -75,8 +71,8 @@ function gameOverScene(ctx) {
 }
 
 function step() {
-    if(store.getState().scene.get('scene') === GAME) {
-        store.dispatch({type: 'NEXT', payload: store.getState()});
+    if(store.getState().get('scene') === GAME) {
+        store.dispatch({type: 'UPDATE'});
     }
     window.requestAnimationFrame(step);
 }
@@ -91,7 +87,7 @@ window.requestAnimationFrame(step);
 document.addEventListener('keydown', (event) => {
     switch(event.keyCode) {
         case 32: // space
-            store.dispatch({type: 'START_GAME'});
+            store.dispatch({type: 'BEGIN_GAME'});
             break;
         case 80: // p
             store.dispatch({type: 'PAUSE_GAME'});
@@ -100,7 +96,7 @@ document.addEventListener('keydown', (event) => {
             store.dispatch({type: 'RESUME_GAME'});
             break;
         case 27: // esc
-            store.dispatch({type: 'START'});
+            store.dispatch({type: 'START_GAME'});
             break;
         case 37: // left
             store.dispatch({type: 'SPEED', value: -5});

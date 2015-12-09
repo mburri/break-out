@@ -1,6 +1,6 @@
 import {Map} from 'immutable';
 import {expect} from 'chai';
-
+import {GAME} from '../../src/const/scene-constants';
 import {ball} from '../../src/reducers/ball-reducer';
 
 describe('ball reducer', () => {
@@ -58,26 +58,30 @@ describe('ball reducer', () => {
 
     it('should move the ball', () => {
         const state = Map({
-          ball: Map({
-              dx: -2,
-              dy: 2,
-              posx: 320,
-              posy: 100
+            ball: Map({
+                dx: -2,
+                dy: 2,
+                posx: 320,
+                posy: 100
+            }),
+            paddle: Map({
+                position: 320,
+                speed: 5
             })
         });
-        const payload = {
-            paddle: Map({
-            position: 320,
-            speed: 5
-        })};
-        const nextState = ball(state, {type: 'NEXT', payload: payload});
+        const nextState = ball(state, {type: 'NEXT'});
         expect(nextState).to.equal(Map({
             ball: Map({
               dx: -2,
               dy: 2,
               posx: 318,
               posy: 102
-            })
+            }),
+            paddle: Map({
+                position: 320,
+                speed: 5
+            }),
+            scene: GAME
         }));
     });
 });

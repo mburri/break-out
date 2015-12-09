@@ -1,8 +1,6 @@
-import {createStore, combineReducers} from 'redux';
-import {scene} from './reducers/scene-reducer';
-import {paddle} from './reducers/paddle-reducer';
-import {ball} from './reducers/ball-reducer';
+import {createStore} from 'redux';
+import {reduce} from './reducers/reducer';
 
 export default function makeStore() {
-    return createStore(combineReducers({scene, paddle, ball }));
+    return createStore(reduce);
 }

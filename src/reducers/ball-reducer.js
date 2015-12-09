@@ -19,7 +19,7 @@ export function ball(state = INITIAL_STATE, action) {
         case 'BOUNCE_Y':
             return Ball.bounceY(state);
         case 'NEXT':
-            return Ball.move(state, action.payload);
+            return Ball.move(state);
         default:
             return state;
     }

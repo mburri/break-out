@@ -1,4 +1,5 @@
 import {Map, toJS} from 'immutable';
+import {GAME, GAME_OVER} from '../const/scene-constants.js';
 
 export function bounceY(state) {
     return state.setIn(['ball', 'dy'], -1 * state.getIn(['ball', 'dy']));
@@ -8,20 +9,19 @@ export function bounceX(state) {
     return state.setIn(['ball', 'dx'], -1 * state.getIn(['ball','dx']));
 }
 
-export function move(state, payload) {
+export function move(state) {
     const ball = state.get('ball').toJS();
-    const paddle = payload.paddle.get('paddle').toJS();
+    const paddle = state.get('paddle').toJS();
     const newDeltaY = bounceOfTopOrPaddle(ball, paddle);
 
-    if (newDeltaY === 0) {
-        return Map({}); // GAME OVER
-    }
+    const scene = newDeltaY === 0 ? GAME_OVER : GAME;
 
     const newDeltaX = inverseDeltaOnCollision(ball.posx, ball.dx, 640, 0);
     return state.setIn(['ball', 'posx'], state.getIn(['ball', 'posx']) + newDeltaX)
                 .setIn(['ball', 'posy'], state.getIn(['ball', 'posy']) + newDeltaY)
                 .setIn(['ball', 'dx'], newDeltaX)
-                .setIn(['ball', 'dy'], newDeltaY);
+                .setIn(['ball', 'dy'], newDeltaY)
+                .set('scene', scene);
 }
 
 function inverseDeltaOnCollision(pos, delta, upper, lower) {
