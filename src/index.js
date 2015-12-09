@@ -53,7 +53,7 @@ function drawPaddle(ctx) {
 }
 
 function drawBall(ctx) {
-    let ball = store.getState().ball.toJS();
+    let ball = store.getState().ball.get('ball').toJS();
     ctx.beginPath();
     ctx.arc(ball.posx, ball.posy, 10, 0, Math.PI*2);
     ctx.fillStyle = "#0095DD";

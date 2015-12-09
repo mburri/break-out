@@ -1,15 +1,15 @@
 import {Map, toJS} from 'immutable';
 
 export function bounceY(state) {
-    return state.set('dy', -1 * state.get('dy'));
+    return state.setIn(['ball', 'dy'], -1 * state.getIn(['ball', 'dy']));
 }
 
 export function bounceX(state) {
-    return state.set('dx', -1 * state.get('dx'));
+    return state.setIn(['ball', 'dx'], -1 * state.getIn(['ball','dx']));
 }
 
 export function move(state, payload) {
-    const ball = state.toJS();
+    const ball = state.get('ball').toJS();
     const paddle = payload.paddle.toJS();
     const newDeltaY = bounceOfTopOrPaddle(ball, paddle);
 
@@ -18,10 +18,10 @@ export function move(state, payload) {
     }
 
     const newDeltaX = inverseDeltaOnCollision(ball.posx, ball.dx, 640, 0);
-    return state.set('posx', state.get('posx') + newDeltaX)
-                .set('posy', state.get('posy') + newDeltaY)
-                .set('dx', newDeltaX)
-                .set('dy', newDeltaY);
+    return state.setIn(['ball', 'posx'], state.getIn(['ball', 'posx']) + newDeltaX)
+                .setIn(['ball', 'posy'], state.getIn(['ball', 'posy']) + newDeltaY)
+                .setIn(['ball', 'dx'], newDeltaX)
+                .setIn(['ball', 'dy'], newDeltaY);
 }
 
 function inverseDeltaOnCollision(pos, delta, upper, lower) {
