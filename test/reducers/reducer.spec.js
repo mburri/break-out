@@ -1,19 +1,27 @@
 import { expect } from 'chai';
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 import { reduce } from '../../src/reducers/reducer';
 import { START, GAME } from '../../src/const/scene-constants';
 
 describe('reducer', () => {
     it('should start the game with the initial state', () => {
+      const bricks = [
+        { posx: 10, posy: 10, width: 50, heigth: 10 },
+        { posx: 70, posy: 10, width: 50, heigth: 10 },
+        { posx: 130, posy: 10, width: 50, heigth: 10 },
+        { posx: 190, posy: 10, width: 50, heigth: 10 }
+      ];
+
         const nextState = reduce(undefined, {
             type: 'START_GAME'
         });
         expect(nextState).to.equal(Map({
+            scene: START,
             board: Map({
+              bricks : List(bricks),
               heigth: 480,
               width: 640
             }),
-            scene: START,
             ball: Map({
                 dx: 2,
                 dy: 2,

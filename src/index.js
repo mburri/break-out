@@ -39,23 +39,34 @@ function startScene(ctx) {
 function gameScene(ctx) {
     drawPaddle(ctx);
     drawBall(ctx);
+    drawBricks(ctx);
 }
 
 function drawPaddle(ctx) {
+    ctx.fillStyle = "#0095DD";
     ctx.beginPath();
     ctx.rect(store.getState().getIn(['paddle', 'position']), canvas.height-10, 75, 10);
-    ctx.fillStyle = "#0095DD";
     ctx.fill();
     ctx.closePath();
 }
 
 function drawBall(ctx) {
     let ball = store.getState().get('ball').toJS();
+    ctx.fillStyle = "#FFFFFF";
     ctx.beginPath();
     ctx.arc(ball.posx, ball.posy, 10, 0, Math.PI*2);
-    ctx.fillStyle = "#0095DD";
     ctx.fill();
     ctx.closePath();
+}
+
+function drawBricks(ctx) {
+  const bricks = store.getState().getIn(['board', 'bricks']).toJS();
+  bricks.forEach( brick => {
+    ctx.fillStyle = "#000000";
+    ctx.rect(brick.posx, brick.posy, brick.width, brick.heigth);
+    ctx.fill();
+    ctx.closePath();
+  });
 }
 
 function pauseScene(ctx) {
