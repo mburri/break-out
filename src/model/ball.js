@@ -1,13 +1,13 @@
-import {Map, toJS} from 'immutable';
+import {Map, List, toJS} from 'immutable';
 import {GAME, GAME_OVER} from '../const/scene-constants.js';
 import {isGameOver} from './game';
 
 export function move(state) {
-    const ball = state.get('ball').toJS();
-    const paddle = state.get('paddle').toJS();
+    const collisionState = detectCollisionWithBricks(state);
+    const ball = collisionState.get('ball').toJS();
+    const paddle = collisionState.get('paddle').toJS();
     const newDeltaY = bounceOfTopOrPaddle(ball, paddle);
-    const newDeltaX = inverseDeltaOnCollision(ball.posx, ball.dx, 640, 0);
-
+    const newDeltaX = inverseDeltaOnCollision(ball.posx, ball.dx, 640, 0); // left/ rigth 'wall'
     if(isGameOver(state)) {
       return state.set('scene', GAME_OVER);
     }
@@ -35,3 +35,25 @@ function bounceOfTopOrPaddle(ball, paddle) {
     }
     return ball.dy;
 }
+
+function detectCollisionWithBricks(state) {
+    let ball = state.get('ball').toJS();
+    let bricks = state.getIn(['board', 'bricks']);
+    let collided = false;
+    bricks.forEach(brick => {
+        if (brick.hitsLeft > 0 &&
+            ball.posx > brick.posx &&
+            ball.posx < brick.posx + brick.width &&
+            ball.posy > brick.posy &&
+            ball.posy < brick.posy + brick.heigth) {
+                collided = true;
+                brick.hitsLeft--;
+            }
+    });
+    if (collided) {
+        ball.dy = -ball.dy;
+        return state.mergeIn(['ball'], ball)
+                    .setIn(['board', 'bricks'], List(bricks));
+    }
+    return state;
+ }

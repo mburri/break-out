@@ -62,10 +62,12 @@ function drawBall(ctx) {
 function drawBricks(ctx) {
   const bricks = store.getState().getIn(['board', 'bricks']).toJS();
   bricks.forEach( brick => {
-    ctx.fillStyle = "#000000";
-    ctx.rect(brick.posx, brick.posy, brick.width, brick.heigth);
-    ctx.fill();
-    ctx.closePath();
+    if(brick.hitsLeft > 0) {
+        ctx.fillStyle = "#000000";
+        ctx.rect(brick.posx, brick.posy, brick.width, brick.heigth);
+        ctx.fill();
+        ctx.closePath();
+    }
   });
 }
 

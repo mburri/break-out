@@ -5,10 +5,10 @@ import * as Paddle from '../model/paddle';
 import * as Scene from '../model/scenes';
 
 const bricks = [
-  { posx: 10, posy: 10, width: 50, heigth: 10 },
-  { posx: 70, posy: 10, width: 50, heigth: 10 },
-  { posx: 130, posy: 10, width: 50, heigth: 10 },
-  { posx: 190, posy: 10, width: 50, heigth: 10 }
+  { posx: 10, posy: 10, width: 50, heigth: 10, hitsLeft: 1 },
+  { posx: 70, posy: 10, width: 50, heigth: 10, hitsLeft: 1 },
+  { posx: 130, posy: 10, width: 50, heigth: 10, hitsLeft: 1 },
+  { posx: 190, posy: 10, width: 50, heigth: 10, hitsLeft: 2 }
 ];
 
 const INITIAL_STATE = Map({
