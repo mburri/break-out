@@ -6,6 +6,10 @@ import * as Scene from '../model/scenes';
 
 const INITIAL_STATE = Map({
     scene: START,
+    board: Map({
+      heigth: 480,
+      width: 640
+    }),
     ball: Map({
         dx: 2,
         dy: 2,

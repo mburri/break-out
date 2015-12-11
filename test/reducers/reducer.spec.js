@@ -9,6 +9,10 @@ describe('reducer', () => {
             type: 'START_GAME'
         });
         expect(nextState).to.equal(Map({
+            board: Map({
+              heigth: 480,
+              width: 640
+            }),
             scene: START,
             ball: Map({
                 dx: 2,
@@ -64,6 +68,10 @@ describe('reducer', () => {
     it('should update the game state', () => {
         const state = Map({
             scene: GAME,
+            board: Map({
+              heigth: 480,
+              width: 640
+            }),
             ball: Map({
                 dx: 2,
                 dy: 2,
@@ -79,6 +87,10 @@ describe('reducer', () => {
         expect(nextState).to.equal(
             Map({
                 scene: GAME,
+                board: Map({
+                  heigth: 480,
+                  width: 640
+                }),
                 ball: Map({
                     dx: 2,
                     dy: 2,

@@ -1,19 +1,21 @@
 import {Map, toJS} from 'immutable';
 import {GAME, GAME_OVER} from '../const/scene-constants.js';
+import {isGameOver} from './game';
 
 export function move(state) {
     const ball = state.get('ball').toJS();
     const paddle = state.get('paddle').toJS();
     const newDeltaY = bounceOfTopOrPaddle(ball, paddle);
-
-    const scene = newDeltaY === 0 ? GAME_OVER : GAME;
-
     const newDeltaX = inverseDeltaOnCollision(ball.posx, ball.dx, 640, 0);
+
+    if(isGameOver(state)) {
+      return state.set('scene', GAME_OVER);
+    }
+
     return state.setIn(['ball', 'posx'], state.getIn(['ball', 'posx']) + newDeltaX)
                 .setIn(['ball', 'posy'], state.getIn(['ball', 'posy']) + newDeltaY)
                 .setIn(['ball', 'dx'], newDeltaX)
-                .setIn(['ball', 'dy'], newDeltaY)
-                .set('scene', scene);
+                .setIn(['ball', 'dy'], newDeltaY);
 }
 
 function inverseDeltaOnCollision(pos, delta, upper, lower) {
@@ -29,8 +31,6 @@ function bounceOfTopOrPaddle(ball, paddle) {
     } else if(ball.posy + ball.dy > 470) {
         if(ball.posx > paddle.position && ball.posx < paddle.position + 75) {
             return -ball.dy;
-        } else {
-            return 0;
         }
     }
     return ball.dy;
