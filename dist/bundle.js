@@ -57,9 +57,9 @@
 
 	var _store2 = _interopRequireDefault(_store);
 
-	var _scenes = __webpack_require__(14);
+	var _scenes = __webpack_require__(19);
 
-	var _immutable = __webpack_require__(17);
+	var _immutable = __webpack_require__(14);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -70,7 +70,7 @@
 
 	function render(ctx) {
 	    ctx.clearRect(0, 0, canvas.width, canvas.height);
-	    switch (store.getState().scene) {
+	    switch (store.getState().get('scene')) {
 	        case _scenes.START:
 	            startScene(ctx);
 	            break;
@@ -98,28 +98,39 @@
 	}
 
 	function gameScene(ctx) {
-	    if (Object.keys(store.getState().ball.toJS()).length === 0) {
-	        store.dispatch({ type: 'GAME_OVER' });
-	    }
 	    drawPaddle(ctx);
 	    drawBall(ctx);
+	    drawBricks(ctx);
 	}
 
 	function drawPaddle(ctx) {
-	    ctx.beginPath();
-	    ctx.rect(store.getState().paddle.get('position'), canvas.height - 10, 75, 10);
+	    var paddle = store.getState().get('paddle').toJS();
 	    ctx.fillStyle = "#0095DD";
+	    ctx.beginPath();
+	    ctx.rect(paddle.position, canvas.height - 10, paddle.width, 10);
 	    ctx.fill();
 	    ctx.closePath();
 	}
 
 	function drawBall(ctx) {
-	    var ball = store.getState().ball.toJS();
+	    var ball = store.getState().get('ball').toJS();
+	    ctx.fillStyle = "#FFFFFF";
 	    ctx.beginPath();
 	    ctx.arc(ball.posx, ball.posy, 10, 0, Math.PI * 2);
-	    ctx.fillStyle = "#0095DD";
 	    ctx.fill();
 	    ctx.closePath();
+	}
+
+	function drawBricks(ctx) {
+	    var bricks = store.getState().getIn(['board', 'bricks']).toJS();
+	    bricks.forEach(function (brick) {
+	        if (brick.hitsLeft > 0) {
+	            ctx.fillStyle = "#000000";
+	            ctx.rect(brick.posx, brick.posy, brick.width, brick.heigth);
+	            ctx.fill();
+	            ctx.closePath();
+	        }
+	    });
 	}
 
 	function pauseScene(ctx) {
@@ -135,8 +146,8 @@
 	}
 
 	function step() {
-	    if (store.getState().scene === _scenes.GAME) {
-	        store.dispatch({ type: 'NEXT', payload: store.getState() });
+	    if (store.getState().get('scene') === _scenes.GAME) {
+	        store.dispatch({ type: 'UPDATE' });
 	    }
 	    window.requestAnimationFrame(step);
 	}
@@ -152,7 +163,7 @@
 	    switch (event.keyCode) {
 	        case 32:
 	            // space
-	            store.dispatch({ type: 'START_GAME' });
+	            store.dispatch({ type: 'BEGIN_GAME' });
 	            break;
 	        case 80:
 	            // p
@@ -164,7 +175,7 @@
 	            break;
 	        case 27:
 	            // esc
-	            store.dispatch({ type: 'START' });
+	            store.dispatch({ type: 'START_GAME' });
 	            break;
 	        case 37:
 	            // left
@@ -190,14 +201,10 @@
 
 	var _redux = __webpack_require__(3);
 
-	var _sceneReducer = __webpack_require__(13);
-
-	var _paddleReducer = __webpack_require__(15);
-
-	var _ballReducer = __webpack_require__(18);
+	var _reducer = __webpack_require__(13);
 
 	function makeStore() {
-	    return (0, _redux.createStore)((0, _redux.combineReducers)({ scene: _sceneReducer.scene, paddle: _paddleReducer.paddle, ball: _ballReducer.ball }));
+	    return (0, _redux.createStore)(_reducer.reduce);
 	}
 
 /***/ },
@@ -890,131 +897,77 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.scene = scene;
+	exports.reduce = reduce;
 
-	var _scenes = __webpack_require__(14);
+	var _immutable = __webpack_require__(14);
 
-	var INITIAL_STATE = _scenes.START;
+	var _sceneConstants = __webpack_require__(15);
 
-	function scene() {
+	var _ball = __webpack_require__(16);
+
+	var Ball = _interopRequireWildcard(_ball);
+
+	var _paddle = __webpack_require__(18);
+
+	var Paddle = _interopRequireWildcard(_paddle);
+
+	var _scenes = __webpack_require__(19);
+
+	var Scene = _interopRequireWildcard(_scenes);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	var bricks = [{ posx: 10, posy: 10, width: 50, heigth: 10, hitsLeft: 1 }, { posx: 70, posy: 10, width: 50, heigth: 10, hitsLeft: 1 }, { posx: 130, posy: 10, width: 50, heigth: 10, hitsLeft: 1 }, { posx: 190, posy: 10, width: 50, heigth: 10, hitsLeft: 2 }];
+
+	var INITIAL_STATE = (0, _immutable.Map)({
+	    scene: _sceneConstants.START,
+	    board: (0, _immutable.Map)({
+	        bricks: (0, _immutable.List)(bricks),
+	        heigth: 480,
+	        width: 640
+	    }),
+	    ball: (0, _immutable.Map)({
+	        dx: 4,
+	        dy: 4,
+	        posx: 320,
+	        posy: 100
+	    }),
+	    paddle: (0, _immutable.Map)({
+	        speed: 0,
+	        position: 300,
+	        width: 75
+	    })
+	});
+
+	function reduce() {
 	    var state = arguments.length <= 0 || arguments[0] === undefined ? INITIAL_STATE : arguments[0];
 	    var action = arguments[1];
 
 	    switch (action.type) {
-	        case 'START':
-	            return (0, _scenes.start)(state);
 	        case 'START_GAME':
-	            return (0, _scenes.begin)(state);
+	            return INITIAL_STATE;
+	        case 'BEGIN_GAME':
+	            return Scene.begin(state);
 	        case 'PAUSE_GAME':
-	            return (0, _scenes.pause)(state);
+	            return Scene.pause(state);
 	        case 'RESUME_GAME':
-	            return (0, _scenes.resume)(state);
-	        case 'GAME_OVER':
-	            return (0, _scenes.gameOver)(state);
+	            return Scene.resume(state);
+	        case 'UPDATE':
+	            return Ball.move(state).update('paddle', function (paddleState) {
+	                return Paddle.move(paddleState);
+	            });
+	        case 'SPEED':
+	            return state.update('paddle', function (paddleState) {
+	                return Paddle.setSpeed(paddleState, action.value);
+	            });
 	        default:
 	            return state;
+
 	    }
 	}
 
 /***/ },
 /* 14 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.start = start;
-	exports.gameOver = gameOver;
-	exports.begin = begin;
-	exports.pause = pause;
-	exports.resume = resume;
-	var START = exports.START = "START";
-	var GAME = exports.GAME = "GAME";
-	var GAME_OVER = exports.GAME_OVER = "GAME_OVER";
-	var PAUSE = exports.PAUSE = "PAUSE";
-
-	function start(state) {
-	    return START;
-	}
-	function gameOver(state) {
-	    return GAME_OVER;
-	}
-
-	function begin(state) {
-	    return GAME;
-	}
-
-	function pause(state) {
-	    return PAUSE;
-	}
-
-	function resume(state) {
-	    return GAME;
-	}
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.paddle = paddle;
-
-	var _paddle = __webpack_require__(16);
-
-	var _immutable = __webpack_require__(17);
-
-	var INITIAL_STATE = (0, _immutable.Map)({
-	    speed: 0,
-	    position: 300
-	});
-	function paddle() {
-	    var state = arguments.length <= 0 || arguments[0] === undefined ? INITIAL_STATE : arguments[0];
-	    var action = arguments[1];
-
-	    switch (action.type) {
-	        case 'START':
-	            return INITIAL_STATE;
-	        case 'SPEED':
-	            return (0, _paddle.setSpeed)(state, action.value);
-	        case 'NEXT':
-	            return (0, _paddle.move)(state);
-	        default:
-	            return state;
-	    }
-	}
-
-/***/ },
-/* 16 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.setSpeed = setSpeed;
-	exports.move = move;
-	function setSpeed(paddleState, newSpeed) {
-	    return paddleState.set('speed', newSpeed);
-	}
-
-	function move(paddleState) {
-	    var speed = paddleState.get('speed');
-	    var currentPosition = paddleState.get('position');
-	    if (speed + currentPosition <= 0 || speed + currentPosition + 75 >= 640) {
-	        speed = 0;
-	    }
-	    return paddleState.set('position', currentPosition + speed).set('speed', speed);
-	}
-
-/***/ },
-/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -5979,7 +5932,20 @@
 	}));
 
 /***/ },
-/* 18 */
+/* 15 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var START = exports.START = 'START';
+	var GAME = exports.GAME = 'GAME';
+	var GAME_OVER = exports.GAME_OVER = 'GAME_OVER';
+
+/***/ },
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5987,95 +5953,168 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.ball = ball;
+	exports.move = undefined;
 
-	var _immutable = __webpack_require__(17);
+	var _immutable = __webpack_require__(14);
 
-	var _ball = __webpack_require__(19);
+	var _sceneConstants = __webpack_require__(15);
 
-	var Ball = _interopRequireWildcard(_ball);
+	var _game = __webpack_require__(17);
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
 
-	var INITIAL_STATE = (0, _immutable.Map)({
-	    dx: 2,
-	    dy: 2,
-	    posx: 320,
-	    posy: 100
-	});
+	var collidesWithRoof = function collidesWithRoof(ball) {
+	    return ball.posy + ball.dy < 0;
+	};
 
-	function ball() {
-	    var state = arguments.length <= 0 || arguments[0] === undefined ? INITIAL_STATE : arguments[0];
-	    var action = arguments[1];
+	var collidesWithPaddle = function collidesWithPaddle(ball, paddle) {
+	    return ball.posy + ball.dy > 470 && // TODO: add property for paddle.posy
+	    ball.posx > paddle.position && ball.posx < paddle.position + paddle.width;
+	};
 
-	    switch (action.type) {
-	        case 'START':
-	            return INITIAL_STATE;
-	        case 'BOUNCE_X':
-	            return Ball.bounceX(state);
-	        case 'BOUNCE_Y':
-	            return Ball.bounceY(state);
-	        case 'NEXT':
-	            return Ball.move(state, action.payload);
-	        default:
-	            return state;
+	var collidesWithSides = function collidesWithSides(ball, board) {
+	    return ball.posx + ball.dx > board.width || ball.posx + ball.dx < 0;
+	};
+
+	var inverse = function inverse(val) {
+	    return val * -1;
+	};
+
+	var handleCollisionWithBricks = function handleCollisionWithBricks(state) {
+	    var ball = state.get('ball').toJS();
+	    var bricks = state.getIn(['board', 'bricks']);
+	    var collided = false;
+	    bricks.forEach(function (brick) {
+	        if (brick.hitsLeft > 0 && ball.posx > brick.posx && ball.posx < brick.posx + brick.width && ball.posy > brick.posy && ball.posy < brick.posy + brick.heigth) {
+	            collided = true;
+	            brick.hitsLeft--;
+	        }
+	    });
+	    if (collided) {
+	        ball.dy = -ball.dy;
+	        return state.mergeIn(['ball'], ball).setIn(['board', 'bricks'], (0, _immutable.List)(bricks));
 	    }
+	    return state;
+	};
+
+	var handleCollisions = function handleCollisions(state) {
+	    var ball = state.get('ball').toJS();
+	    var paddle = state.get('paddle').toJS();
+	    var board = state.get('board').toJS();
+
+	    if (collidesWithRoof(ball)) {
+	        return state.updateIn(['ball', 'dy'], 0, inverse);
+	    }
+	    if (collidesWithPaddle(ball, paddle)) {
+	        var _ret = (function () {
+	            // todo: calculate new dx based on friction or collision point
+	            var collisionPoint = ball.posx - paddle.position;
+	            var acceleration = Math.cos((collisionPoint - paddle.width / 2) / (paddle.width / 2));
+
+	            return {
+	                v: state.updateIn(['ball', 'dy'], 0, inverse).updateIn(['ball', 'dx'], 0, function (val) {
+	                    return val * acceleration;
+	                })
+	            };
+	        })();
+
+	        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+	    }
+	    if (collidesWithSides(ball, board)) {
+	        return state.updateIn(['ball', 'dx'], 0, inverse);
+	    }
+
+	    return handleCollisionWithBricks(state);
+	};
+
+	var move = exports.move = function move(state) {
+	    var collisionState = handleCollisions(state);
+
+	    if ((0, _game.isGameOver)(state)) {
+	        return collisionState.set('scene', _sceneConstants.GAME_OVER);
+	    }
+	    return collisionState.setIn(['ball', 'posx'], state.getIn(['ball', 'posx']) + state.getIn(['ball', 'dx'])).setIn(['ball', 'posy'], state.getIn(['ball', 'posy']) + state.getIn(['ball', 'dy']));
+	};
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.isGameOver = isGameOver;
+	function isGameOver(state) {
+	    var _state$toJS = state.toJS();
+
+	    var ball = _state$toJS.ball;
+	    var board = _state$toJS.board;
+
+	    return ball.posy >= board.heigth;
+	}
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.setSpeed = setSpeed;
+	exports.move = move;
+	function setSpeed(paddleState, newSpeed) {
+	    return paddleState.set('speed', newSpeed);
+	}
+
+	function move(paddleState) {
+	    var speed = paddleState.get('speed');
+	    var currentPosition = paddleState.get('position');
+	    if (speed + currentPosition <= 0 || speed + currentPosition + 75 >= 640) {
+	        speed = 0;
+	    }
+	    return paddleState.set('position', currentPosition + speed).set('speed', speed);
 	}
 
 /***/ },
 /* 19 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.bounceY = bounceY;
-	exports.bounceX = bounceX;
-	exports.move = move;
+	exports.start = start;
+	exports.gameOver = gameOver;
+	exports.begin = begin;
+	exports.pause = pause;
+	exports.resume = resume;
+	var START = exports.START = "START";
+	var GAME = exports.GAME = "GAME";
+	var GAME_OVER = exports.GAME_OVER = "GAME_OVER";
+	var PAUSE = exports.PAUSE = "PAUSE";
 
-	var _immutable = __webpack_require__(17);
-
-	function bounceY(state) {
-	    return state.set('dy', -1 * state.get('dy'));
+	function start(state) {
+	    return state.set('scene', START);
+	}
+	function gameOver(state) {
+	    return state.set('scene', GAME_OVER);
 	}
 
-	function bounceX(state) {
-	    return state.set('dx', -1 * state.get('dx'));
+	function begin(state) {
+	    return state.set('scene', GAME);
 	}
 
-	function move(state, payload) {
-	    var ball = state.toJS();
-	    var paddle = payload.paddle.toJS();
-	    var newDeltaY = bounceOfTopOrPaddle(ball, paddle);
-
-	    if (newDeltaY === 0) {
-	        return (0, _immutable.Map)({}); // GAME OVER
-	    }
-
-	    var newDeltaX = inverseDeltaOnCollision(ball.posx, ball.dx, 640, 0);
-	    return state.set('posx', state.get('posx') + newDeltaX).set('posy', state.get('posy') + newDeltaY).set('dx', newDeltaX).set('dy', newDeltaY);
+	function pause(state) {
+	    return state.set('scene', PAUSE);
 	}
 
-	function inverseDeltaOnCollision(pos, delta, upper, lower) {
-	    if (pos + delta > upper || pos + delta < 0) {
-	        return -delta;
-	    }
-	    return delta;
-	}
-
-	function bounceOfTopOrPaddle(ball, paddle) {
-	    if (ball.posy + ball.dy < 0) {
-	        return -ball.dy;
-	    } else if (ball.posy + ball.dy > 470) {
-	        if (ball.posx > paddle.position && ball.posx < paddle.position + 75) {
-	            return -ball.dy;
-	        } else {
-	            return 0;
-	        }
-	    }
-	    return ball.dy;
+	function resume(state) {
+	    return state.set('scene', GAME);
 	}
 
 /***/ }

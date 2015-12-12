@@ -19,14 +19,15 @@ const INITIAL_STATE = Map({
       width: 640
     }),
     ball: Map({
-        dx: 2,
-        dy: 2,
+        dx: 4,
+        dy: 4,
         posx: 320,
         posy: 100
     }),
     paddle: Map({
       speed: 0,
-      position: 300
+      position: 300,
+      width: 75
     })
 });
 

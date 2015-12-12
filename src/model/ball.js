@@ -2,41 +2,23 @@ import {Map, List, toJS} from 'immutable';
 import {GAME, GAME_OVER} from '../const/scene-constants.js';
 import {isGameOver} from './game';
 
-export function move(state) {
-    const collisionState = detectCollisionWithBricks(state);
-    const ball = collisionState.get('ball').toJS();
-    const paddle = collisionState.get('paddle').toJS();
-    const newDeltaY = bounceOfTopOrPaddle(ball, paddle);
-    const newDeltaX = inverseDeltaOnCollision(ball.posx, ball.dx, 640, 0); // left/ rigth 'wall'
-    if(isGameOver(state)) {
-      return state.set('scene', GAME_OVER);
-    }
+const collidesWithRoof = (ball) => {
+    return ball.posy + ball.dy < 0;
+};
 
-    return state.setIn(['ball', 'posx'], state.getIn(['ball', 'posx']) + newDeltaX)
-                .setIn(['ball', 'posy'], state.getIn(['ball', 'posy']) + newDeltaY)
-                .setIn(['ball', 'dx'], newDeltaX)
-                .setIn(['ball', 'dy'], newDeltaY);
-}
+const collidesWithPaddle = (ball, paddle) => {
+    return ball.posy + ball.dy > 470  && // TODO: add property for paddle.posy
+           ball.posx > paddle.position &&
+           ball.posx < paddle.position + paddle.width;
+};
 
-function inverseDeltaOnCollision(pos, delta, upper, lower) {
-    if(pos + delta > upper || pos + delta < 0) {
-        return -delta;
-    }
-    return delta;
-}
+const collidesWithSides = (ball, board) => {
+    return ball.posx + ball.dx > board.width || ball.posx + ball.dx < 0;
+};
 
-function bounceOfTopOrPaddle(ball, paddle) {
-    if(ball.posy + ball.dy < 0) {
-        return -ball.dy;
-    } else if(ball.posy + ball.dy > 470) {
-        if(ball.posx > paddle.position && ball.posx < paddle.position + 75) {
-            return -ball.dy;
-        }
-    }
-    return ball.dy;
-}
+const inverse = (val) => val * -1;
 
-function detectCollisionWithBricks(state) {
+const handleCollisionWithBricks = (state) => {
     let ball = state.get('ball').toJS();
     let bricks = state.getIn(['board', 'bricks']);
     let collided = false;
@@ -56,4 +38,37 @@ function detectCollisionWithBricks(state) {
                     .setIn(['board', 'bricks'], List(bricks));
     }
     return state;
- }
+};
+
+const handleCollisions = (state) => {
+    const ball = state.get('ball').toJS();
+    const paddle = state.get('paddle').toJS();
+    const board = state.get('board').toJS();
+
+    if(collidesWithRoof(ball)) {
+        return state.updateIn(['ball', 'dy'], 0, inverse);
+    }
+    if(collidesWithPaddle(ball, paddle)) {
+        // todo: calculate new dx based on friction or collision point
+        const collisionPoint = ball.posx - paddle.position;
+        const acceleration = Math.cos((collisionPoint - paddle.width / 2) / (paddle.width / 2));
+
+        return state.updateIn(['ball', 'dy'], 0, inverse)
+                    .updateIn(['ball', 'dx'], 0, val => val * acceleration);
+    }
+    if(collidesWithSides(ball, board)) {
+        return state.updateIn(['ball', 'dx'], 0, inverse);
+    }
+
+    return handleCollisionWithBricks(state);
+};
+
+export const move = (state) => {
+    const collisionState = handleCollisions(state);
+
+    if(isGameOver(state)) {
+      return collisionState.set('scene', GAME_OVER);
+    }
+    return collisionState.setIn(['ball', 'posx'], state.getIn(['ball', 'posx']) + state.getIn(['ball', 'dx']))
+                .setIn(['ball', 'posy'], state.getIn(['ball', 'posy']) + state.getIn(['ball', 'dy']));
+};

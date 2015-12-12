@@ -43,9 +43,10 @@ function gameScene(ctx) {
 }
 
 function drawPaddle(ctx) {
+    const paddle = store.getState().get('paddle').toJS();
     ctx.fillStyle = "#0095DD";
     ctx.beginPath();
-    ctx.rect(store.getState().getIn(['paddle', 'position']), canvas.height-10, 75, 10);
+    ctx.rect(paddle.position, canvas.height-10, paddle.width, 10);
     ctx.fill();
     ctx.closePath();
 }
