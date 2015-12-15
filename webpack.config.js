@@ -7,7 +7,10 @@ module.exports = {
         loaders: [{
             test: /\.jsx?$/,
             exclude: /node_modules/,
-            loader: 'babel'
+            loader: 'babel',
+            query: {
+                plugins: ["transform-object-assign"]
+            }
         }]
     },
     resolve: {

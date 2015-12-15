@@ -20,21 +20,22 @@ const inverse = (val) => val * -1;
 
 const handleCollisionWithBricks = (state) => {
     let ball = state.get('ball').toJS();
-    let bricks = state.getIn(['board', 'bricks']);
+    let bricks = [];
     let collided = false;
-    bricks.forEach(brick => {
+    state.getIn(['board', 'bricks']).forEach(brick => {
         if (brick.hitsLeft > 0 &&
             ball.posx > brick.posx &&
             ball.posx < brick.posx + brick.width &&
             ball.posy > brick.posy &&
             ball.posy < brick.posy + brick.heigth) {
                 collided = true;
-                brick.hitsLeft--;
+                bricks.push(Object.assign({}, brick, {hitsLeft: brick.hitsLeft - 1 }));
+            } else {
+                bricks.push(Object.assign({}, brick));
             }
     });
     if (collided) {
-        ball.dy = -ball.dy;
-        return state.mergeIn(['ball'], ball)
+        return state.updateIn(['ball', 'dy'], 0, inverse)
                     .setIn(['board', 'bricks'], List(bricks));
     }
     return state;
