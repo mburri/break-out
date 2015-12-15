@@ -6,6 +6,7 @@ const store = makeStore();
 
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
+var stateView = document.getElementById('state');
 
 function render(ctx) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -91,10 +92,16 @@ function step() {
     window.requestAnimationFrame(step);
 }
 
+const showState = (element) => {
+    element.innerHTML = JSON.stringify(store.getState().toJS(), null, 4);
+};
+
 store.subscribe(() => {
     render(ctx);
+    showState(stateView);
 });
 render(ctx);
+showState(stateView);
 
 window.requestAnimationFrame(step);
 
