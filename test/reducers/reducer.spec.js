@@ -1,16 +1,16 @@
 import { expect } from 'chai';
-import { Map, List } from 'immutable';
+import { Map, List, fromJS } from 'immutable';
 import { reduce } from '../../src/reducers/reducer';
 import { START, GAME } from '../../src/const/scene-constants';
 
 describe('reducer', () => {
     it('should start the game with the initial state', () => {
-      const bricks = [
-        { posx: 10, posy: 10, width: 50, heigth: 10 },
-        { posx: 70, posy: 10, width: 50, heigth: 10 },
-        { posx: 130, posy: 10, width: 50, heigth: 10 },
-        { posx: 190, posy: 10, width: 50, heigth: 10 }
-      ];
+        const bricks = fromJS([
+          { posx: 10, posy: 10, width: 50, heigth: 10, hitsLeft: 1 },
+          { posx: 70, posy: 10, width: 50, heigth: 10, hitsLeft: 1 },
+          { posx: 130, posy: 10, width: 50, heigth: 10, hitsLeft: 1 },
+          { posx: 190, posy: 10, width: 50, heigth: 10, hitsLeft: 2 }
+        ]);
 
         const nextState = reduce(undefined, {
             type: 'START_GAME'
@@ -18,19 +18,20 @@ describe('reducer', () => {
         expect(nextState).to.equal(Map({
             scene: START,
             board: Map({
-              bricks : List(bricks),
+              bricks : bricks,
               heigth: 480,
               width: 640
             }),
             ball: Map({
-                dx: 2,
-                dy: 2,
+                dx: 4,
+                dy: 4,
                 posx: 320,
                 posy: 100
             }),
             paddle: Map({
                 speed: 0,
-                position: 300
+                position: 300,
+                width: 75
             })
         }));
     });
@@ -74,11 +75,18 @@ describe('reducer', () => {
     });
 
     it('should update the game state', () => {
+        const bricks = fromJS([
+          { posx: 10, posy: 10, width: 50, heigth: 10, hitsLeft: 1 },
+          { posx: 70, posy: 10, width: 50, heigth: 10, hitsLeft: 1 },
+          { posx: 130, posy: 10, width: 50, heigth: 10, hitsLeft: 1 },
+          { posx: 190, posy: 10, width: 50, heigth: 10, hitsLeft: 2 }
+        ]);
         const state = Map({
             scene: GAME,
             board: Map({
               heigth: 480,
-              width: 640
+              width: 640,
+              bricks: bricks
             }),
             ball: Map({
                 dx: 2,
@@ -97,7 +105,8 @@ describe('reducer', () => {
                 scene: GAME,
                 board: Map({
                   heigth: 480,
-                  width: 640
+                  width: 640,
+                  bricks : bricks
                 }),
                 ball: Map({
                     dx: 2,

@@ -29,6 +29,7 @@ const handleCollisionWithBricks = (state) => {
             ball.posy > brick.posy &&
             ball.posy < brick.posy + brick.heigth) {
                 collided = true;
+                console.log('collision!')
                 bricks.push(Object.assign({}, brick, {hitsLeft: brick.hitsLeft - 1 }));
             } else {
                 bricks.push(Object.assign({}, brick));

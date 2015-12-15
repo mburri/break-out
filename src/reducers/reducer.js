@@ -1,20 +1,20 @@
-import {Map, List} from 'immutable';
+import {Map, List, fromJS} from 'immutable';
 import {START} from '../const/scene-constants';
 import * as Ball from '../model/ball';
 import * as Paddle from '../model/paddle';
 import * as Scene from '../model/scenes';
 
-const bricks = [
+const bricks = fromJS([
   { posx: 10, posy: 10, width: 50, heigth: 10, hitsLeft: 1 },
   { posx: 70, posy: 10, width: 50, heigth: 10, hitsLeft: 1 },
   { posx: 130, posy: 10, width: 50, heigth: 10, hitsLeft: 1 },
   { posx: 190, posy: 10, width: 50, heigth: 10, hitsLeft: 2 }
-];
+]);
 
 const INITIAL_STATE = Map({
     scene: START,
     board: Map({
-      bricks: List(bricks),
+      bricks: bricks,
       heigth: 480,
       width: 640
     }),
