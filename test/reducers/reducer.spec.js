@@ -32,7 +32,8 @@ describe('reducer', () => {
                 speed: 0,
                 position: 300,
                 width: 75
-            })
+            }),
+            score: 0
         }));
     });
 

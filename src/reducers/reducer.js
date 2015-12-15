@@ -28,7 +28,8 @@ const INITIAL_STATE = Map({
       speed: 0,
       position: 300,
       width: 75
-    })
+  }),
+  score: 0
 });
 
 export function reduce(state = INITIAL_STATE, action) {
