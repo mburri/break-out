@@ -64,10 +64,15 @@
 ###2015-12-16
 - extract key codes to constants in separate file. Are there any open source key code modules yet?
 - extract rendering functions from main application file
+- action creators
 
 ##TODOs
 ~~constants for key codes~~
 
 ~~extract render functions from index.js~~
-- constants for action types
+
+~~constants for action types~~
+
+- use ball radius in collision detection
+- set speed only when in game scene
 - fancy gh-page and reasonable build/ deploy
