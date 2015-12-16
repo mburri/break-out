@@ -62,10 +62,12 @@
 - i was not fully aware that you're able to mutate an object inside an immutable list - using Object.assign() solved the problem. I'll implement my next project without Immutable.js jus t to practice ES2015 features.
 
 ###2015-12-16
-- fixed some todos
+- extract key codes to constants in separate file. Are there any open source key code modules yet?
+- extract rendering functions from main application file
 
 ##TODOs
 ~~constants for key codes~~
-- extract render functions from index.js
+
+~~extract render functions from index.js~~
 - constants for action types
-- fancy gh-page and reasoonable build/ deploy
+- fancy gh-page and reasonable build/ deploy
