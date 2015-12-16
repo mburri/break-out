@@ -55,8 +55,17 @@
 - adding a moving ball
 - collision detection and game over...
 
+###2015-12-6 - 2015-12-15
+- removed reducers. theres only one reducer left - because it does not make sense to split them yet (yagni?)
+- added bricks, collision detection
+- the state tree is now visible when playing the game
+- i was not fully aware that you're able to mutate an object inside an immutable list - using Object.assign() solved the problem. I'll implement my next project without Immutable.js jus t to practice ES2015 features.
+
+###2015-12-16
+- fixed some todos
+
 ##TODOs
-- constants for key codes
+~~constants for key codes~~
 - extract render functions from index.js
 - constants for action types
 - fancy gh-page and reasoonable build/ deploy

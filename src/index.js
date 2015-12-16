@@ -1,6 +1,7 @@
 import makeStore from './store';
 import {START, GAME, PAUSE, GAME_OVER} from './model/scenes';
 import {toJS} from 'immutable';
+import * as KEYS from './const/key-codes';
 
 const store = makeStore();
 
@@ -107,22 +108,22 @@ window.requestAnimationFrame(step);
 
 document.addEventListener('keydown', (event) => {
     switch(event.keyCode) {
-        case 32: // space
+        case KEYS.SPACE:
             store.dispatch({type: 'BEGIN_GAME'});
             break;
-        case 80: // p
+        case KEYS.P:
             store.dispatch({type: 'PAUSE_GAME'});
             break;
-        case 82: /// r
+        case KEYS.R:
             store.dispatch({type: 'RESUME_GAME'});
             break;
-        case 27: // esc
+        case KEYS.ESC:
             store.dispatch({type: 'START_GAME'});
             break;
-        case 37: // left
+        case KEYS.LEFT:
             store.dispatch({type: 'SPEED', value: -5});
             break;
-        case 39: // right
+        case KEYS.RIGHT:
             store.dispatch({type: 'SPEED', value: 5});
             break;
     }
