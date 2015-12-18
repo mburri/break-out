@@ -1,5 +1,5 @@
 import {Map, List, fromJS} from 'immutable';
-import {START} from '../const/scene-constants';
+import {START, GAME} from '../const/scene-constants';
 import * as Ball from '../model/ball';
 import * as Paddle from '../model/paddle';
 import * as Scene from '../model/scenes';
@@ -46,9 +46,13 @@ export function reduce(state = INITIAL_STATE, action) {
             return Ball.move(state)
                        .update('paddle', paddleState => Paddle.move(paddleState));
         case 'SPEED':
-            return state.update(
+            if(state.get('scene') == GAME) {
+              return state.update(
                 'paddle', paddleState =>
                     Paddle.setSpeed(paddleState, action.value));
+            } else {
+              return state;
+            }
         default:
             return state;
 

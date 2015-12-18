@@ -61,10 +61,13 @@
 - the state tree is now visible when playing the game
 - i was not fully aware that you're able to mutate an object inside an immutable list - using Object.assign() solved the problem. I'll implement my next project without Immutable.js jus t to practice ES2015 features.
 
-###2015-12-16
+###2015-12-16/17
 - extract key codes to constants in separate file. Are there any open source key code modules yet?
 - extract rendering functions from main application file
 - action creators
+
+###2015-12-18
+- fixed a small bug where the speed of the paddle was updated while not in game scene
 
 ##TODOs
 ~~constants for key codes~~
@@ -74,5 +77,7 @@
 ~~constants for action types~~
 
 - use ball radius in collision detection
-- set speed only when in game scene
+
+~~set speed only when in game scene~~
+
 - fancy gh-page and reasonable build/ deploy
